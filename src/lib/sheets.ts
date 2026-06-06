@@ -1,5 +1,5 @@
 import Papa from 'papaparse'
-import { sheetCsvUrl } from '../config'
+import { LOCATIONS, sheetCsvUrl } from '../config'
 import type { Restaurant } from '../types'
 
 /** Raw CSV row: every gviz column comes back as a string keyed by its header. */
@@ -43,7 +43,12 @@ function byRanking(a: Restaurant, b: Restaurant): number {
  * and returns restaurants ranked by rating.
  */
 export async function fetchLocation(tabKey: string): Promise<Restaurant[]> {
-  const res = await fetch(sheetCsvUrl(tabKey))
+  const location = LOCATIONS.find((l) => l.key === tabKey)
+  if (!location) {
+    throw new Error(`Unknown location "${tabKey}".`)
+  }
+
+  const res = await fetch(sheetCsvUrl(location.gid))
   if (!res.ok) {
     throw new Error(
       `Could not load the sheet (HTTP ${res.status}). ` +

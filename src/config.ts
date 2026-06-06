@@ -5,18 +5,20 @@ export interface LocationTab {
   key: string
   /** Thai label shown in the header tab bar. */
   label: string
+  /** Exact Google Sheet tab gid used by the gviz endpoint. */
+  gid: string
 }
 
 export const LOCATIONS: LocationTab[] = [
-  { key: 'siam', label: 'สยาม' },
-  { key: 'ari', label: 'อารีย์' },
-  { key: 'thonglor', label: 'ทองหล่อ' },
-  { key: 'asoke', label: 'อโศก' },
-  { key: 'phromphong', label: 'พร้อมพงษ์' },
+  { key: 'siam', label: 'สยาม', gid: '187216561' },
+  { key: 'ari', label: 'อารีย์', gid: '752109424' },
+  { key: 'thonglor', label: 'ทองหล่อ', gid: '920995911' },
+  { key: 'asoke', label: 'อโศก', gid: '1791019134' },
+  { key: 'phromphong', label: 'พร้อมพงษ์', gid: '585935467' },
 ]
 
-/** Builds the public gviz CSV export URL for a given sheet tab. */
-export function sheetCsvUrl(tabKey: string): string {
-  const params = new URLSearchParams({ tqx: 'out:csv', sheet: tabKey })
+/** Builds the public gviz CSV export URL for a given sheet tab gid. */
+export function sheetCsvUrl(gid: string): string {
+  const params = new URLSearchParams({ tqx: 'out:csv', gid })
   return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?${params.toString()}`
 }
