@@ -1,3 +1,12 @@
+export interface SubScores {
+  ratingReviewQuality: number
+  groupSuitability: number
+  priceSuitability: number
+  travelConvenience: number
+  dataCompleteness: number
+  uniquenessExperience: number
+}
+
 export interface Restaurant {
   title: string
   subTitle: string
@@ -11,4 +20,7 @@ export interface Restaurant {
   url: string
   permanentlyClosed: boolean
   temporarilyClosed: boolean
+  systemScore: number
+  summary: string
+  scores: SubScores | null
 }

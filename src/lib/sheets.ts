@@ -1,6 +1,6 @@
 import Papa from 'papaparse'
 import { LOCATIONS, sheetCsvUrl } from '../config'
-import type { Restaurant } from '../types'
+import type { Restaurant, SubScores } from '../types'
 
 /** Raw CSV row: every gviz column comes back as a string keyed by its header. */
 type RawRow = Record<string, string>
@@ -13,6 +13,24 @@ function toNumber(value: string | undefined): number {
 
 function toBool(value: string | undefined): boolean {
   return String(value).trim().toUpperCase() === 'TRUE'
+}
+
+/** Parses the `scores` JSON cell; returns null when absent or malformed. */
+function safeParseScores(raw: string | undefined): SubScores | null {
+  if (!raw || !raw.trim()) return null
+  try {
+    const obj = JSON.parse(raw) as Partial<SubScores>
+    return {
+      ratingReviewQuality: Number(obj.ratingReviewQuality) || 0,
+      groupSuitability: Number(obj.groupSuitability) || 0,
+      priceSuitability: Number(obj.priceSuitability) || 0,
+      travelConvenience: Number(obj.travelConvenience) || 0,
+      dataCompleteness: Number(obj.dataCompleteness) || 0,
+      uniquenessExperience: Number(obj.uniquenessExperience) || 0,
+    }
+  } catch {
+    return null
+  }
 }
 
 function mapRow(row: RawRow): Restaurant {
@@ -29,6 +47,9 @@ function mapRow(row: RawRow): Restaurant {
     url: row.url?.trim() ?? '',
     permanentlyClosed: toBool(row.permanentlyClosed),
     temporarilyClosed: toBool(row.temporarilyClosed),
+    systemScore: toNumber(row.systemScore),
+    summary: row.summary?.trim() ?? '',
+    scores: safeParseScores(row.scores),
   }
 }
 

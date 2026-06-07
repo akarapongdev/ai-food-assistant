@@ -1,5 +1,9 @@
 export const SHEET_ID = '1oYMTuVYpLBUisQBsIjB65enWYKWEfkNwaxU5DOhTzkI'
 
+/** n8n workflow webhook triggered from the header action button. */
+export const N8N_WEBHOOK_URL =
+  'https://akrp24.app.n8n.cloud/webhook/ac23de00-b87d-482a-8cf5-b43d1700761f'
+
 export interface LocationTab {
   /** Exact Google Sheet tab name used by the gviz endpoint. */
   key: string
