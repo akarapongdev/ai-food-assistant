@@ -2,7 +2,7 @@ export const SHEET_ID = '1oYMTuVYpLBUisQBsIjB65enWYKWEfkNwaxU5DOhTzkI'
 
 /** n8n workflow webhook triggered from the header action button. */
 export const N8N_WEBHOOK_URL =
-  'https://akrp24.app.n8n.cloud/webhook/ac23de00-b87d-482a-8cf5-b43d1700761f'
+  'https://akrp24.app.n8n.cloud/webhook/90d58ae7-e716-416e-aa65-68094b48b016'
 
 export interface LocationTab {
   /** Exact Google Sheet tab name used by the gviz endpoint. */
@@ -11,14 +11,18 @@ export interface LocationTab {
   label: string
   /** Exact Google Sheet tab gid used by the gviz endpoint. */
   gid: string
+  /** Raw Google Sheet tab gid used by the gviz endpoint. */
+  raw_gid: string
+  /** Raw Google Sheet tab gid used by the gviz endpoint. */
+  task_key: string
 }
 
 export const LOCATIONS: LocationTab[] = [
-  { key: 'siam', label: 'สยาม', gid: '187216561' },
-  { key: 'ari', label: 'อารีย์', gid: '752109424' },
-  { key: 'thonglor', label: 'ทองหล่อ', gid: '920995911' },
-  { key: 'asoke', label: 'อโศก', gid: '1791019134' },
-  { key: 'phromphong', label: 'พร้อมพงษ์', gid: '585935467' },
+  { key: 'siam', label: 'สยาม', raw_gid: '0', gid: '187216561', task_key: '7EtxlU9RugYBl9qWw' },
+  { key: 'ari', label: 'อารีย์', raw_gid: '906333227', gid: '752109424', task_key: 'TZEK4twvIQur6b9p4' },
+  { key: 'thonglor', label: 'ทองหล่อ', raw_gid: '1741629981', gid: '920995911', task_key: 'rJlTvwDOX5nkXoGPs' },
+  { key: 'asoke', label: 'อโศก', raw_gid: '2014870274', gid: '1791019134', task_key: 'gX7DcXhijJxk9gtJc' },
+  { key: 'phromphong', label: 'พร้อมพงษ์', raw_gid: '708806260', gid: '585935467', task_key: 'SmEjpoVFLjeCdJJtR' },
 ]
 
 /** Builds the public gviz CSV export URL for a given sheet tab gid. */

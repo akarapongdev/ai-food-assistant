@@ -19,6 +19,18 @@ export function Header({ activeTab, onSelect, onWebhookSuccess }: HeaderProps) {
   })
   const isLoading = status === 'loading'
 
+  const activeLocation = LOCATIONS.find((l) => l.key === activeTab)
+
+  function runWorkflow() {
+    if (!activeLocation) return
+    trigger({
+      key: activeLocation.key,
+      task_key: activeLocation.task_key,
+      raw: activeLocation.raw_gid,
+      clean: activeLocation.gid,
+    })
+  }
+
   return (
     <header className="header">
       <div className="header__row">
@@ -31,8 +43,8 @@ export function Header({ activeTab, onSelect, onWebhookSuccess }: HeaderProps) {
           <button
             type="button"
             className="action-btn"
-            disabled={isLoading || true}
-            onClick={() => trigger({ location: activeTab })}
+            disabled={isLoading || !activeLocation}
+            onClick={runWorkflow}
           >
             {isLoading && <span className="action-btn__spinner" aria-hidden />}
             {isLoading ? 'กำลังประมวลผล…' : '⚡ เรียกใช้ Workflow'}

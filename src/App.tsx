@@ -3,7 +3,8 @@ import { LOCATIONS } from './config'
 import { useSheetData } from './hooks/useSheetData'
 import { Header } from './components/Header'
 import { Overview } from './components/Overview'
-import { TopPicks } from './components/TopPicks'
+import { CriteriaPicks } from './components/CriteriaPicks'
+import { TopSystemScore } from './components/TopSystemScore'
 import { RestaurantTable } from './components/RestaurantTable'
 import './App.css'
 
@@ -14,9 +15,6 @@ const REFRESH_DELAYS_MS = [5000, 20000, 45000]
 function App() {
   const [activeTab, setActiveTab] = useState<string>(LOCATIONS[0].key)
   const { data, loading, error, refreshing, refetch } = useSheetData(activeTab)
-
-  const locationLabel =
-    LOCATIONS.find((l) => l.key === activeTab)?.label ?? activeTab
 
   // Track scheduled refresh timers so they can be cleared on unmount.
   const timers = useRef<ReturnType<typeof setTimeout>[]>([])
@@ -45,8 +43,6 @@ function App() {
       />
 
       <main className="content">
-        <Overview activeTab={activeTab} data={data} loading={loading} error={error} />
-
         {refreshing && (
           <p className="refresh-banner">
             <span className="refresh-banner__spinner" aria-hidden />
@@ -54,9 +50,9 @@ function App() {
           </p>
         )}
 
-        {!loading && !error && (
-          <TopPicks data={data} locationLabel={locationLabel} />
-        )}
+        <Overview activeTab={activeTab} data={data} loading={loading} error={error} />
+        {!loading && !error && <CriteriaPicks data={data} />}
+        {!loading && !error && <TopSystemScore data={data} />}
         <RestaurantTable data={data} loading={loading} />
       </main>
     </div>

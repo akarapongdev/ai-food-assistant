@@ -1,6 +1,6 @@
 import Papa from 'papaparse'
 import { LOCATIONS, sheetCsvUrl } from '../config'
-import type { Restaurant, SubScores } from '../types'
+import type { OpeningHour, Restaurant, SubScores } from '../types'
 
 /** Raw CSV row: every gviz column comes back as a string keyed by its header. */
 type RawRow = Record<string, string>
@@ -11,8 +11,30 @@ function toNumber(value: string | undefined): number {
   return Number.isFinite(n) ? n : 0
 }
 
-function toBool(value: string | undefined): boolean {
-  return String(value).trim().toUpperCase() === 'TRUE'
+/** Parses a JSON string-array cell (e.g. `categories`); returns [] when absent/invalid. */
+function safeParseStringArray(raw: string | undefined): string[] {
+  if (!raw || !raw.trim()) return []
+  try {
+    const arr = JSON.parse(raw)
+    return Array.isArray(arr) ? arr.filter((x): x is string => typeof x === 'string') : []
+  } catch {
+    return []
+  }
+}
+
+/** Parses the `openingHours` JSON cell into {day, hours} entries; [] when absent/invalid. */
+function safeParseOpeningHours(raw: string | undefined): OpeningHour[] {
+  if (!raw || !raw.trim()) return []
+  try {
+    const arr = JSON.parse(raw)
+    if (!Array.isArray(arr)) return []
+    return arr
+      .filter((x) => x && typeof x === 'object')
+      .map((x) => ({ day: String(x.day ?? ''), hours: String(x.hours ?? '') }))
+      .filter((x) => x.day || x.hours)
+  } catch {
+    return []
+  }
 }
 
 /** Parses the `scores` JSON cell; returns null when absent or malformed. */
@@ -37,19 +59,22 @@ function mapRow(row: RawRow): Restaurant {
   return {
     title: row.title?.trim() ?? '',
     subTitle: row.subTitle?.trim() ?? '',
-    categoryName: row.categoryName?.trim() ?? '',
     price: row.price?.trim() ?? '',
+    categoryName: row.categoryName?.trim() ?? '',
+    neighborhood: row.neighborhood?.trim() ?? '',
     totalScore: toNumber(row.totalScore),
     reviewsCount: toNumber(row.reviewsCount),
-    neighborhood: row.neighborhood?.trim() ?? '',
     address: row.address?.trim() ?? '',
-    website: row.website?.trim() ?? '',
-    url: row.url?.trim() ?? '',
-    permanentlyClosed: toBool(row.permanentlyClosed),
-    temporarilyClosed: toBool(row.temporarilyClosed),
-    systemScore: toNumber(row.systemScore),
-    summary: row.summary?.trim() ?? '',
+    openingHours: safeParseOpeningHours(row.openingHours),
+    categories: safeParseStringArray(row.categories),
+    rank: toNumber(row.rank),
+    // Prefer `website`; fall back to legacy `url` so older tabs keep a link during migration.
+    website: row.website?.trim() || row.url?.trim() || '',
+    placeId: row.placeId?.trim() ?? '',
+    phoneUnformatted: row.phoneUnformatted?.trim() ?? '',
     scores: safeParseScores(row.scores),
+    summary: row.summary?.trim() ?? '',
+    systemScore: toNumber(row.systemScore),
   }
 }
 

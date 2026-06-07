@@ -7,20 +7,27 @@ export interface SubScores {
   uniquenessExperience: number
 }
 
+export interface OpeningHour {
+  day: string
+  hours: string
+}
+
 export interface Restaurant {
   title: string
   subTitle: string
-  categoryName: string
   price: string
+  categoryName: string
+  neighborhood: string
   totalScore: number
   reviewsCount: number
-  neighborhood: string
   address: string
+  openingHours: OpeningHour[]
+  categories: string[]
+  rank: number
   website: string
-  url: string
-  permanentlyClosed: boolean
-  temporarilyClosed: boolean
-  systemScore: number
-  summary: string
+  placeId: string
+  phoneUnformatted: string
   scores: SubScores | null
+  summary: string
+  systemScore: number
 }

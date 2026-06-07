@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react'
 import type { Restaurant } from '../types'
 import { ScoreBars } from './ScoreBars'
+import { OpeningHoursCell } from './OpeningHoursCell'
+import { SummaryCell } from './SummaryCell'
 
 interface RestaurantTableProps {
   data: Restaurant[]
@@ -13,7 +15,7 @@ type SortDir = 'asc' | 'desc'
 const ALL = '__all__'
 
 function bestLink(r: Restaurant): string | null {
-  return r.url || r.website || null
+  return r.website || null
 }
 
 export function RestaurantTable({ data, loading }: RestaurantTableProps) {
@@ -114,6 +116,7 @@ export function RestaurantTable({ data, loading }: RestaurantTableProps) {
               <th className="table__scores">Scores</th>
               <th className="table__summary">Summary</th>
               <th>Neighborhood</th>
+              <th>Opening Hours</th>
               <th>Link</th>
             </tr>
           </thead>
@@ -126,12 +129,6 @@ export function RestaurantTable({ data, loading }: RestaurantTableProps) {
                   <td>
                     <div className="cell-name">{r.title}</div>
                     {r.subTitle && <div className="cell-subname">{r.subTitle}</div>}
-                    {r.permanentlyClosed && (
-                      <span className="badge badge--closed">Permanently closed</span>
-                    )}
-                    {!r.permanentlyClosed && r.temporarilyClosed && (
-                      <span className="badge badge--temp">Temporarily closed</span>
-                    )}
                   </td>
                   <td>{r.categoryName || '—'}</td>
                   <td>{r.price || '—'}</td>
@@ -152,15 +149,12 @@ export function RestaurantTable({ data, loading }: RestaurantTableProps) {
                     <ScoreBars scores={r.scores} />
                   </td>
                   <td className="table__summary">
-                    {r.summary ? (
-                      <span className="summary-text" title={r.summary}>
-                        {r.summary}
-                      </span>
-                    ) : (
-                      <span className="muted">—</span>
-                    )}
+                    <SummaryCell summary={r.summary} />
                   </td>
                   <td>{r.neighborhood || '—'}</td>
+                  <td>
+                    <OpeningHoursCell hours={r.openingHours} />
+                  </td>
                   <td>
                     {link ? (
                       <a href={link} target="_blank" rel="noreferrer noopener">
